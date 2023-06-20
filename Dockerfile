@@ -17,6 +17,7 @@ RUN Rscript -e "install.packages('devtools')"
 RUN Rscript -e "install.packages('phytools')"
 RUN Rscript -e "install.packages('tidyverse')"
 RUN Rscript -e "install.packages('quantreg')"
+RUN Rscript -e "install.packages('polynom')"
 RUN Rscript -e "BiocManager::install('QDNAseq')"
 
 RUN Rscript -e "library(devtools)"
