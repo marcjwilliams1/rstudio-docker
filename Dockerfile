@@ -9,6 +9,7 @@ RUN apt-get update && apt-get -y upgrade && \
         apt-get clean && apt-get purge && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN apt-get install -y xclip && apt-get clean
 
 RUN Rscript -e "install.packages('argparse')"
 RUN Rscript -e "install.packages('R.utils')"
