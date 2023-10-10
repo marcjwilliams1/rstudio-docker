@@ -43,6 +43,7 @@ RUN Rscript -e "BiocManager::install('SingleCellExperiment')"
 
 RUN Rscript -e "library(devtools)"
 RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
+RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
 
