@@ -41,6 +41,7 @@ RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19.masked')"
 RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19')"
 RUN Rscript -e "BiocManager::install('SingleCellExperiment')"
 
+
 RUN Rscript -e "library(devtools)"
 RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
