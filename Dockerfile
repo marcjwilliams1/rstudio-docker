@@ -41,6 +41,7 @@ RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19.masked')"
 RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19')"
 RUN Rscript -e "BiocManager::install('SingleCellExperiment')"
 RUN Rscript -e "BiocManager::install('escape')"
+RUN Rscript -e "BiocManager::install('zellkonverter')"
 
 
 RUN Rscript -e "library(devtools)"
