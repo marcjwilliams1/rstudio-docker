@@ -5,7 +5,7 @@ RUN --mount=type=secret,id=github_token \
 
 RUN apt-get update && apt-get -y upgrade && \
         apt-get install -y build-essential wget \
-                libncurses5-dev zlib1g-dev libbz2-dev liblzma-dev libcurl3-dev libcairo2-dev libxt-dev xclip && \
+                libncurses5-dev zlib1g-dev libbz2-dev liblzma-dev libcurl3-dev libcairo2-dev libxt-dev xclip xvfb && \
         apt-get clean && apt-get purge && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -35,6 +35,7 @@ RUN Rscript -e "install.packages('segmented')"
 RUN Rscript -e "install.packages('foreach')"
 RUN Rscript -e "install.packages('pastecs')"
 RUN Rscript -e "install.packages('doParallel')"
+RUN Rscript -e "install.packages('flexdashboard')"
 RUN Rscript -e "BiocManager::install('QDNAseq')"
 RUN Rscript -e "BiocManager::install('QDNAseq.hg19')"
 RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg38.masked')"
