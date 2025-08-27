@@ -65,14 +65,8 @@ RUN Rscript -e "BiocManager::install('rhdf5')"
 RUN Rscript -e "BiocManager::install('anndataR')"
 
 # Check R can see github token the token
-RUN Rscript -e "
-  cat('R Environment GITHUB_PAT length:', nchar(Sys.getenv('GITHUB_PAT')), '\n')
-  if (nchar(Sys.getenv('GITHUB_PAT')) > 0) {
-    cat('✓ GitHub token is available to R\n')
-  } else {
-    cat('✗ GitHub token is NOT available to R\n')
-  }
-"
+# Check R can see the token
+RUN Rscript -e "cat('R Environment GITHUB_PAT length:', nchar(Sys.getenv('GITHUB_PAT')), '\n'); if (nchar(Sys.getenv('GITHUB_PAT')) > 0) { cat('✓ GitHub token is available to R\n') } else { cat('✗ GitHub token is NOT available to R\n') }"
 
 RUN Rscript -e "library(devtools)"
 RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
