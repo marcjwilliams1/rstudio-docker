@@ -83,6 +83,57 @@ RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9
         ./configure --prefix $(pwd) && \
         make
 
+# Install system dependencies for Python and scientific computing
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    python3-venv \
+    build-essential \
+    libhdf5-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Miniforge (conda-forge focused) instead of Miniconda
+RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh && \
+    /bin/bash /tmp/miniforge.sh -b -p /opt/miniforge && \
+    rm /tmp/miniforge.sh && \
+    /opt/miniforge/bin/conda clean -a -y && \
+    ln -s /opt/miniforge/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
+
+# Create conda environment with scanpy using conda-forge
+RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.9 -c conda-forge -y && \
+    /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
+    scanpy \
+    pandas \
+    numpy \
+    scipy \
+    matplotlib \
+    seaborn \
+    jupyter \
+    ipython \
+    scikit-learn \
+    anndata \
+    leidenalg \
+    louvain \
+    -y && \
+    /opt/miniforge/bin/conda clean -a -y
+
+# Set environment variables for reticulate
+ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
+ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
+
+# Install reticulate and other useful R packages
+RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')"
+
+# Configure reticulate to use the conda environment
+RUN R -e "library(reticulate); use_condaenv('scanpy_env', conda='/opt/miniforge/bin/conda')"
+
 ENV PATH=${PATH}:/usr/src/samtools-1.9
 
 WORKDIR /usr/src
