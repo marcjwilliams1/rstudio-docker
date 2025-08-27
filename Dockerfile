@@ -94,20 +94,21 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libcurl4-openssl-dev \
     libssl-dev \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Miniconda for better Python package management
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/miniconda && \
-    rm /tmp/miniconda.sh && \
-    /opt/miniconda/bin/conda clean -a -y && \
-    ln -s /opt/miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo ". /opt/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
+# Install Miniforge (conda-forge focused) instead of Miniconda
+RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh && \
+    /bin/bash /tmp/miniforge.sh -b -p /opt/miniforge && \
+    rm /tmp/miniforge.sh && \
+    /opt/miniforge/bin/conda clean -a -y && \
+    ln -s /opt/miniforge/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
 
-# Create conda environment with scanpy and related tools
-RUN /opt/miniconda/bin/conda create -n scanpy_env python=3.9 -y && \
-    /opt/miniconda/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
+# Create conda environment with scanpy using conda-forge
+RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.9 -c conda-forge -y && \
+    /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
     scanpy \
     pandas \
     numpy \
@@ -121,17 +122,17 @@ RUN /opt/miniconda/bin/conda create -n scanpy_env python=3.9 -y && \
     leidenalg \
     louvain \
     -y && \
-    /opt/miniconda/bin/conda clean -all
+    /opt/miniforge/bin/conda clean -a -y
 
 # Set environment variables for reticulate
-ENV RETICULATE_PYTHON=/opt/miniconda/envs/scanpy_env/bin/python
-ENV PATH=/opt/miniconda/envs/scanpy_env/bin:$PATH
+ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
+ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
 
 # Install reticulate and other useful R packages
 RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')"
 
 # Configure reticulate to use the conda environment
-RUN R -e "library(reticulate); use_condaenv('scanpy_env', conda='/opt/miniconda/bin/conda')"
+RUN R -e "library(reticulate); use_condaenv('scanpy_env', conda='/opt/miniforge/bin/conda')"
 
 ENV PATH=${PATH}:/usr/src/samtools-1.9
 
