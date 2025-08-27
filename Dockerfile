@@ -101,7 +101,7 @@ RUN apt-get update && apt-get install -y \
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/miniconda && \
     rm /tmp/miniconda.sh && \
-    /opt/miniconda/bin/conda clean -tipsy && \
+    /opt/miniconda/bin/conda clean -a -y && \
     ln -s /opt/miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
 
