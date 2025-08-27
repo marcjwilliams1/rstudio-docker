@@ -1,7 +1,23 @@
 FROM bioconductor/bioconductor_docker
 
-RUN --mount=type=secret,id=github_token \
-  export GITHUB_PAT=$(cat /run/secrets/github_token) 
+ARG GITHUB_PAT
+ENV GITHUB_PAT=$GITHUB_PAT
+
+# Debug: Check if token is available and working
+RUN echo "Checking GitHub token setup..." && \
+    if [ -z "$GITHUB_PAT" ]; then \
+      echo "WARNING: GITHUB_PAT is not set" \
+    ; else \
+      echo "GITHUB_PAT is set (length: ${#GITHUB_PAT})" && \
+      echo "Testing GitHub API access..." && \
+      curl -s -H "Authorization: token $GITHUB_PAT" \
+           https://api.github.com/rate_limit | head -10 \
+    ; fi
+
+# Configure R to use the token
+RUN if [ ! -z "$GITHUB_PAT" ]; then \
+      echo "GITHUB_PAT=${GITHUB_PAT}" >> /usr/local/lib/R/etc/Renviron.site \
+    ; fi
 
 RUN apt-get update && apt-get -y upgrade && \
         apt-get install -y build-essential wget \
@@ -48,6 +64,15 @@ RUN Rscript -e "BiocManager::install('zellkonverter')"
 RUN Rscript -e "BiocManager::install('rhdf5')"
 RUN Rscript -e "BiocManager::install('anndataR')"
 
+# Check R can see github token the token
+RUN Rscript -e "
+  cat('R Environment GITHUB_PAT length:', nchar(Sys.getenv('GITHUB_PAT')), '\n')
+  if (nchar(Sys.getenv('GITHUB_PAT')) > 0) {
+    cat('✓ GitHub token is available to R\n')
+  } else {
+    cat('✗ GitHub token is NOT available to R\n')
+  }
+"
 
 RUN Rscript -e "library(devtools)"
 RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
