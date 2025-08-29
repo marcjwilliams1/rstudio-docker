@@ -79,7 +79,7 @@ RUN Rscript -e "devtools::install_github('caravagnalab/CNAqc', dependencies = TR
 RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
 
 #install anndataR, not yet on bioconductor
-RUN Rscript -e "pak::pak('scverse/anndataR'))"
+RUN Rscript -e "pak::pak('scverse/anndataR')"
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
 
