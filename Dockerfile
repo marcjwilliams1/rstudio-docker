@@ -54,7 +54,7 @@ RUN Rscript -e "install.packages('doParallel')"
 RUN Rscript -e "install.packages('flexdashboard')"
 
 #print bioconductor version
-RUN Rscript -e "cat('Bioconductor version:', BiocManager::version(), '\n')"
+RUN Rscript -e "cat('Bioconductor version:', as.character(BiocManager::version()), '\n')"
 
 #instal bioconductor packages
 RUN Rscript -e "BiocManager::install('QDNAseq')"
