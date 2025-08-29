@@ -52,6 +52,7 @@ RUN Rscript -e "install.packages('foreach')"
 RUN Rscript -e "install.packages('pastecs')"
 RUN Rscript -e "install.packages('doParallel')"
 RUN Rscript -e "install.packages('flexdashboard')"
+RUN Rscript -e "install.packages('pak')"
 
 #print bioconductor version
 RUN Rscript -e "cat('Bioconductor version:', as.character(BiocManager::version()), '\n')"
@@ -67,7 +68,6 @@ RUN Rscript -e "BiocManager::install('SingleCellExperiment')"
 RUN Rscript -e "BiocManager::install('escape')"
 RUN Rscript -e "BiocManager::install('zellkonverter')"
 RUN Rscript -e "BiocManager::install('rhdf5')"
-RUN Rscript -e "BiocManager::install('anndataR')"
 
 # Check R can see github token the token
 # Check R can see the token
@@ -77,6 +77,9 @@ RUN Rscript -e "library(devtools)"
 RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('caravagnalab/CNAqc', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
+
+#install anndataR, not yet on bioconductor
+RUN Rscript -e "pak::pak('scverse/anndataR'))"
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
 
