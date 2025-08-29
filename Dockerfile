@@ -1,4 +1,4 @@
-FROM bioconductor/bioconductor_docker
+FROM bioconductor/bioconductor_docker:3.21
 
 ARG GITHUB_PAT
 ENV GITHUB_PAT=$GITHUB_PAT
@@ -52,6 +52,11 @@ RUN Rscript -e "install.packages('foreach')"
 RUN Rscript -e "install.packages('pastecs')"
 RUN Rscript -e "install.packages('doParallel')"
 RUN Rscript -e "install.packages('flexdashboard')"
+
+#print bioconductor version
+RUN Rscript -e "cat('Bioconductor version:', BiocManager::version(), '\n')"
+
+#instal bioconductor packages
 RUN Rscript -e "BiocManager::install('QDNAseq')"
 RUN Rscript -e "BiocManager::install('QDNAseq.hg19')"
 RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg38.masked')"
