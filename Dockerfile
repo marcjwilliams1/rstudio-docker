@@ -78,7 +78,8 @@ RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = T
 RUN Rscript -e "devtools::install_github('caravagnalab/CNAqc', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
 ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=TRUE
-RUN Rscript -e "devtools::install_github('mskilab/gGnome', dependencies = TRUE)"
+RUN Rscript -e "devtools::install_github('kevinmhadi/khtools', dependencies = TRUE)"
+RUN Rscript -e "devtools::install_github('mskilab/GxG', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('mskilab/GxG', dependencies = TRUE)"
 
 #install anndataR, not yet on bioconductor
