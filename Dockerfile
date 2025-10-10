@@ -119,7 +119,7 @@ RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/downlo
     echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
 
 # Create conda environment with scanpy using conda-forge
-RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.9 -c conda-forge -y && \
+RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.12 -c conda-forge -y && \
     /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
     scanpy \
     pandas \
@@ -162,5 +162,9 @@ RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), re
 RUN R -e "library(reticulate); use_condaenv('scanpy_env', conda='/opt/miniforge/bin/conda')"
 
 ENV PATH=${PATH}:/usr/src/samtools-1.9
+
+# Clean up GitHub token
+RUN sed -i '/GITHUB_PAT/d' /usr/local/lib/R/etc/Renviron.site
+ENV GITHUB_PAT=
 
 WORKDIR /usr/src
