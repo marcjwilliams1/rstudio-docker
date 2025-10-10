@@ -119,7 +119,7 @@ RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/downlo
     echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
 
 # Create conda environment with scanpy using conda-forge
-RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.12 -c conda-forge -y && \
+RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.10 -c conda-forge -y && \
     /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
     scanpy \
     pandas \
@@ -133,23 +133,30 @@ RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.12 -c conda-forge -y 
     anndata \
     leidenalg \
     louvain \
-    scrublet \         
-    scvi-tools \        
-    harmonypy \         
-    pysam \             
-    h5py \              
-    umap-learn \        
-    python-igraph \     
-    adjustText \        
-    squidpy \          
-    muon \
+    scrublet \
+    harmonypy \
+    pysam \
+    h5py \
     mcp \
+    umap-learn \
+    python-igraph \
+    adjustText \
+    squidpy \
+    muon \
     httpx \
-    decoupler-py \      
-    pyreadr \           
-    infercnvpy \        
+    pyreadr \
     -y && \
     /opt/miniforge/bin/conda clean -a -y
+
+# Install packages that might have conflicts separately
+RUN /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge \
+    scvi-tools \
+    decoupler-py \
+    -y && \
+    /opt/miniforge/bin/conda clean -a -y
+
+# Install infercnvpy via pip
+RUN /opt/miniforge/envs/scanpy_env/bin/pip install infercnvpy
 
 # Set environment variables for reticulate
 ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
