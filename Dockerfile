@@ -133,6 +133,21 @@ RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.9 -c conda-forge -y &
     anndata \
     leidenalg \
     louvain \
+    scrublet \         
+    scvi-tools \        
+    harmonypy \         
+    pysam \             
+    h5py \              
+    umap-learn \        
+    python-igraph \     
+    adjustText \        
+    squidpy \          
+    muon \
+    mcp \
+    httpx \
+    decoupler-py \      
+    pyreadr \           
+    infercnvpy \        
     -y && \
     /opt/miniforge/bin/conda clean -a -y
 
