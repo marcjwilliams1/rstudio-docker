@@ -82,6 +82,9 @@ RUN Rscript -e "devtools::install_github('kevinmhadi/khtools', dependencies = TR
 RUN Rscript -e "devtools::install_github('mskilab-org/gGnome', dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('mskilab-org/GxG', dependencies = TRUE)"
 
+# Install copykat for CNV inference from scRNA-seq
+RUN Rscript -e "devtools::install_github('navinlabcode/copykat', dependencies = TRUE)"
+
 #install anndataR, not yet on bioconductor
 RUN Rscript -e "pak::pak('scverse/anndataR')"
 
@@ -155,12 +158,20 @@ RUN /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge \
     -y && \
     /opt/miniforge/bin/conda clean -a -y
 
+# Install rpy2 for R-Python integration and JupyterLab
+RUN /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge \
+    rpy2 \
+    jupyterlab \
+    -y && \
+    /opt/miniforge/bin/conda clean -a -y
+
 # Install infercnvpy via pip
 RUN /opt/miniforge/envs/scanpy_env/bin/pip install infercnvpy
 
-# Set environment variables for reticulate
+# Set environment variables for reticulate and rpy2
 ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
 ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
+ENV R_HOME=/usr/local/lib/R
 
 # Install reticulate and other useful R packages
 RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')"
