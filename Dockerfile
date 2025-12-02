@@ -25,72 +25,39 @@ RUN apt-get update && apt-get -y upgrade && \
         apt-get clean && apt-get purge && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN Rscript -e "install.packages('argparse')"
-RUN Rscript -e "install.packages('R.utils')"
-RUN Rscript -e "install.packages('magick')"
-RUN Rscript -e "install.packages('devtools')"
-RUN Rscript -e "install.packages('optparse')"
-RUN Rscript -e "install.packages('phytools')"
-RUN Rscript -e "install.packages('tidyverse')"
-RUN Rscript -e "install.packages('quantreg')"
-RUN Rscript -e "install.packages('polynom')"
-RUN Rscript -e "install.packages('castor')"
-RUN Rscript -e "install.packages('caper')"
-RUN Rscript -e "install.packages('packrat')"
-RUN Rscript -e "install.packages('ggpubr')"
-RUN Rscript -e "install.packages('slider')"
-RUN Rscript -e "install.packages('mime')"
-RUN Rscript -e "install.packages('here')"
-RUN Rscript -e "install.packages('DT')"
-RUN Rscript -e "install.packages('dendextend')"
-RUN Rscript -e "install.packages('ismev')"
-RUN Rscript -e "install.packages('truncdist')"
-RUN Rscript -e "install.packages('extRemes')"
-RUN Rscript -e "install.packages('fitdistrplus')"
-RUN Rscript -e "install.packages('segmented')"
-RUN Rscript -e "install.packages('foreach')"
-RUN Rscript -e "install.packages('pastecs')"
-RUN Rscript -e "install.packages('doParallel')"
-RUN Rscript -e "install.packages('flexdashboard')"
-RUN Rscript -e "install.packages('pak')"
+# Install CRAN packages in one layer
+RUN Rscript -e "install.packages(c('argparse', 'R.utils', 'magick', 'devtools', 'optparse', 'phytools', 'tidyverse', 'quantreg', 'polynom', 'castor', 'caper', 'packrat', 'ggpubr', 'slider', 'mime', 'here', 'DT', 'dendextend', 'ismev', 'truncdist', 'extRemes', 'fitdistrplus', 'segmented', 'foreach', 'pastecs', 'doParallel', 'flexdashboard', 'pak'))" && \
+    rm -rf /tmp/* /var/tmp/*
 
-#print bioconductor version
+# Print bioconductor version
 RUN Rscript -e "cat('Bioconductor version:', as.character(BiocManager::version()), '\n')"
 
-#instal bioconductor packages
-RUN Rscript -e "BiocManager::install('QDNAseq')"
-RUN Rscript -e "BiocManager::install('QDNAseq.hg19')"
-RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg38.masked')"
-RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg38')"
-RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19.masked')"
-RUN Rscript -e "BiocManager::install('BSgenome.Hsapiens.UCSC.hg19')"
-RUN Rscript -e "BiocManager::install('SingleCellExperiment')"
-RUN Rscript -e "BiocManager::install('escape')"
-RUN Rscript -e "BiocManager::install('zellkonverter')"
-RUN Rscript -e "BiocManager::install('rhdf5')"
+# Install Bioconductor packages in one layer
+RUN Rscript -e "BiocManager::install(c('QDNAseq', 'QDNAseq.hg19', 'BSgenome.Hsapiens.UCSC.hg38.masked', 'BSgenome.Hsapiens.UCSC.hg38', 'BSgenome.Hsapiens.UCSC.hg19.masked', 'BSgenome.Hsapiens.UCSC.hg19', 'SingleCellExperiment', 'escape', 'zellkonverter', 'rhdf5'))" && \
+    rm -rf /tmp/* /var/tmp/*
 
-# Check R can see github token the token
 # Check R can see the token
 RUN Rscript -e "cat('R Environment GITHUB_PAT length:', nchar(Sys.getenv('GITHUB_PAT')), '\n'); if (nchar(Sys.getenv('GITHUB_PAT')) > 0) { cat('✓ GitHub token is available to R\n') } else { cat('✗ GitHub token is NOT available to R\n') }"
 
-RUN Rscript -e "library(devtools)"
-RUN Rscript -e "devtools::install_github('shahcompbio/signals', dependencies = TRUE)"
-RUN Rscript -e "devtools::install_github('caravagnalab/CNAqc', dependencies = TRUE)"
-RUN Rscript -e "devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE)"
+# Install GitHub R packages in one layer
 ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=TRUE
-RUN Rscript -e "devtools::install_github('kevinmhadi/khtools', dependencies = TRUE)"
-RUN Rscript -e "devtools::install_github('mskilab-org/gGnome', dependencies = TRUE)"
-RUN Rscript -e "devtools::install_github('mskilab-org/GxG', dependencies = TRUE)"
+RUN Rscript -e "library(devtools); \
+    devtools::install_github('shahcompbio/signals', dependencies = TRUE); \
+    devtools::install_github('caravagnalab/CNAqc', dependencies = TRUE); \
+    devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE); \
+    devtools::install_github('kevinmhadi/khtools', dependencies = TRUE); \
+    devtools::install_github('mskilab-org/gGnome', dependencies = TRUE); \
+    devtools::install_github('mskilab-org/GxG', dependencies = TRUE); \
+    devtools::install_github('navinlabcode/copykat', dependencies = TRUE)" && \
+    rm -rf /tmp/* /var/tmp/*
 
-# Install copykat for CNV inference from scRNA-seq
-RUN Rscript -e "devtools::install_github('navinlabcode/copykat', dependencies = TRUE)"
-
-#install anndataR, not yet on bioconductor
-RUN Rscript -e "pak::pak('scverse/anndataR')"
+# Install anndataR, not yet on bioconductor
+RUN Rscript -e "pak::pak('scverse/anndataR')" && \
+    rm -rf /tmp/* /var/tmp/*
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
 
-#Samtools
+# Samtools
 RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 && \
         tar jxf samtools-1.9.tar.bz2 && \
         rm samtools-1.9.tar.bz2 && \
@@ -111,7 +78,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     curl \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Miniforge (conda-forge focused) instead of Miniconda
 RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh && \
@@ -121,52 +88,21 @@ RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/downlo
     ln -s /opt/miniforge/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
 
-# Create conda environment with scanpy using conda-forge
+# Create conda environment and install all packages in one layer
 RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.10 -c conda-forge -y && \
-    /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
-    scanpy \
-    pandas \
-    numpy \
-    scipy \
-    matplotlib \
-    seaborn \
-    jupyter \
-    ipython \
-    scikit-learn \
-    anndata \
-    leidenalg \
-    louvain \
-    scrublet \
-    harmonypy \
-    pysam \
-    h5py \
-    mcp \
-    umap-learn \
-    python-igraph \
-    adjustText \
-    squidpy \
-    muon \
-    httpx \
-    pyreadr \
-    -y && \
-    /opt/miniforge/bin/conda clean -a -y
-
-# Install packages that might have conflicts separately
-RUN /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge \
-    scvi-tools \
-    decoupler-py \
-    -y && \
-    /opt/miniforge/bin/conda clean -a -y
-
-# Install rpy2 for R-Python integration and JupyterLab
-RUN /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge \
-    rpy2 \
-    jupyterlab \
-    -y && \
-    /opt/miniforge/bin/conda clean -a -y
+    for i in 1 2 3; do \
+        /opt/miniforge/bin/conda install -n scanpy_env -c conda-forge -c bioconda \
+        scanpy pandas numpy scipy matplotlib seaborn jupyter ipython \
+        scikit-learn anndata leidenalg louvain scrublet harmonypy pysam \
+        h5py mcp umap-learn python-igraph adjustText squidpy muon httpx pyreadr \
+        scvi-tools decoupler-py rpy2 jupyterlab \
+        -y && break || sleep 15; \
+    done && \
+    /opt/miniforge/bin/conda clean -a -y && \
+    rm -rf /root/.cache/*
 
 # Install infercnvpy via pip
-RUN /opt/miniforge/envs/scanpy_env/bin/pip install infercnvpy
+RUN /opt/miniforge/envs/scanpy_env/bin/pip install --no-cache-dir infercnvpy
 
 # Set environment variables for reticulate and rpy2
 ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
@@ -174,7 +110,8 @@ ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
 ENV R_HOME=/usr/local/lib/R
 
 # Install reticulate and other useful R packages
-RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')" && \
+    rm -rf /tmp/* /var/tmp/*
 
 # Configure reticulate to use the conda environment
 RUN R -e "library(reticulate); use_condaenv('scanpy_env', conda='/opt/miniforge/bin/conda')"
