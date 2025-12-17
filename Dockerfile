@@ -105,8 +105,8 @@ RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.10 -c conda-forge -y 
 RUN /opt/miniforge/envs/scanpy_env/bin/pip install --no-cache-dir infercnvpy
 
 # Set environment variables for reticulate and rpy2
+ENV PATH=${PATH}:/opt/miniforge/envs/scanpy_env/bin
 ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
-ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
 ENV R_HOME=/usr/local/lib/R
 
 # Install reticulate and other useful R packages
