@@ -140,8 +140,8 @@ RUN /opt/miniforge/bin/conda create -n scanpy_env python=3.12 -c conda-forge -y 
     /opt/miniforge/bin/conda clean -a -y
 
 # Set environment variables for reticulate
+ENV PATH=${PATH}:/opt/miniforge/envs/scanpy_env/bin
 ENV RETICULATE_PYTHON=/opt/miniforge/envs/scanpy_env/bin/python
-ENV PATH=/opt/miniforge/envs/scanpy_env/bin:$PATH
 
 # Install reticulate and other useful R packages
 RUN R -e "install.packages(c('reticulate', 'Seurat', 'SingleCellExperiment'), repos='https://cloud.r-project.org/')"
