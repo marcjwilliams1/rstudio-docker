@@ -26,7 +26,7 @@ RUN apt-get update && apt-get -y upgrade && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install CRAN packages in one layer
-RUN Rscript -e "install.packages(c('argparse', 'R.utils', 'magick', 'devtools', 'optparse', 'phytools', 'tidyverse', 'quantreg', 'polynom', 'castor', 'caper', 'packrat', 'ggpubr', 'slider', 'mime', 'here', 'DT', 'dendextend', 'ismev', 'truncdist', 'extRemes', 'fitdistrplus', 'segmented', 'foreach', 'pastecs', 'doParallel', 'flexdashboard', 'pak'))" && \
+RUN Rscript -e "install.packages(c('argparse', 'R.utils', 'magick', 'devtools', 'optparse', 'phytools', 'languageserver', 'httpgd', 'tidyverse', 'quantreg', 'polynom', 'castor', 'caper', 'packrat', 'ggpubr', 'slider', 'mime', 'here', 'DT', 'dendextend', 'ismev', 'truncdist', 'extRemes', 'fitdistrplus', 'segmented', 'foreach', 'pastecs', 'doParallel', 'flexdashboard', 'pak'))" && \
     rm -rf /tmp/* /var/tmp/*
 
 # Print bioconductor version
