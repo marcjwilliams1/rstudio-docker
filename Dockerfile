@@ -88,12 +88,16 @@ RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/downlo
     ln -s /opt/miniforge/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/miniforge/etc/profile.d/conda.sh" >> ~/.bashrc
 
-RUN /opt/miniforge/bin/mamba install -n scanpy_env -c conda-forge -c bioconda \
+# Create environment and install packages
+RUN /opt/miniforge/bin/mamba create -n scanpy_env python=3.10 -c conda-forge -y && \
+    /opt/miniforge/bin/mamba install -n scanpy_env -c conda-forge -c bioconda \
     scanpy pandas numpy scipy matplotlib seaborn jupyter ipython \
     scikit-learn anndata leidenalg louvain scrublet harmonypy pysam \
     h5py mcp umap-learn python-igraph adjustText squidpy muon httpx pyreadr \
     scvi-tools decoupler-py rpy2 jupyterlab \
-    -y
+    -y && \
+    /opt/miniforge/bin/conda clean -a -y && \
+    rm -rf /root/.cache/*
 
 # Install infercnvpy via pip
 RUN /opt/miniforge/envs/scanpy_env/bin/pip install --no-cache-dir infercnvpy
