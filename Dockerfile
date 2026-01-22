@@ -46,6 +46,7 @@ RUN Rscript -e "library(devtools); \
     devtools::install_github('caravagnalab/CNAqc', dependencies = TRUE); \
     devtools::install_github('broadinstitute/ichorCNA', dependencies = TRUE); \
     devtools::install_github('kevinmhadi/khtools', dependencies = TRUE); \
+    devtools::install_github('nx10/httpgd', dependencies = TRUE); \
     devtools::install_github('mskilab-org/gGnome', dependencies = TRUE); \
     devtools::install_github('mskilab-org/GxG', dependencies = TRUE); \
     devtools::install_github('navinlabcode/copykat', dependencies = TRUE)" && \
