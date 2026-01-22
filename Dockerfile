@@ -81,7 +81,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install radian system-wide
-RUN pip3 install --no-cache-dir radian
+RUN pip3 install --no-cache-dir  --break-system-packages radian
 
 # Install Miniforge (conda-forge focused) instead of Miniconda
 RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O /tmp/miniforge.sh && \
