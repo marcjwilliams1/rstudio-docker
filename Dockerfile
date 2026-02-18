@@ -33,7 +33,7 @@ RUN Rscript -e "install.packages(c('argparse', 'R.utils', 'magick', 'devtools', 
 RUN Rscript -e "cat('Bioconductor version:', as.character(BiocManager::version()), '\n')"
 
 # Install Bioconductor packages in one layer
-RUN Rscript -e "BiocManager::install(c('QDNAseq', 'QDNAseq.hg19', 'BSgenome.Hsapiens.UCSC.hg38', 'BSgenome.Hsapiens.UCSC.hg19', 'SingleCellExperiment', 'escape', 'zellkonverter', 'rhdf5', 'karyoploteR'))" && \
+RUN Rscript -e "BiocManager::install(c('QDNAseq', 'QDNAseq.hg19', 'BSgenome.Hsapiens.UCSC.hg38', 'BSgenome.Hsapiens.UCSC.hg19', 'SingleCellExperiment', 'escape', 'zellkonverter', 'rhdf5', 'karyoploteR', 'MutationalPatterns', 'maftools'))" && \
     rm -rf /tmp/* /var/tmp/*
 
 # Check R can see the token
